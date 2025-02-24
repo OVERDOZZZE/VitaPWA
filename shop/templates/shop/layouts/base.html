@@ -8,6 +8,12 @@
   <link rel="stylesheet" href="{% static 'shop/css/base.css' %}">
   <link rel="manifest" href="{% static 'manifest.json' %}">
   <meta name="theme-color" content="#4CAF50">
+  <!-- Meta tags for iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="My E-Commerce App">
+  <link rel="apple-touch-icon" href="{% static 'icons/icon-192x192.png' %}">
+
   <!-- Подключение Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   {% block extra_head %}{% endblock %}
