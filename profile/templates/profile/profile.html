@@ -1,0 +1,353 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'profile/css/profile.css' %}">
+<style>
+  /* Стили для карточки профиля */
+.profile-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 10px;
+}
+.profile-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для изображения профиля */
+.profile-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #eee;
+}
+
+/* Стили для имени пользователя */
+.profile-name {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Стили для блока графиков */
+.charts-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Каждый блок графика */
+.chart-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+.chart-section:hover {
+  transform: translateY(-5px);
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 576px) {
+  .profile-card .row {
+    flex-direction: column;
+  }
+  .profile-card .col-12 {
+    text-align: center;
+  }
+  .profile-name {
+    font-size: 1.5rem;
+  }
+}
+/* Линия разделения между именем пользователя и остальными данными */
+.profile-divider {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 1rem 0;
+}
+
+/* Стили для кнопки Edit Profile */
+.edit-profile-btn {
+  background-color: #114c8b; /* Задаёт зелёный фон */
+  border: none;
+  padding: 0.2rem 1rem;
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+
+
+
+.edit-profile-btn:hover {
+  background-color: #218838;
+  text-decoration: none;
+}
+
+</style>
+
+<div class="container mt-4">
+  <!-- Карточка профиля -->
+  <div class="profile-card card shadow-lg p-4">
+    <div class="row align-items-center">
+      <!-- Изображение профиля слева -->
+      <div class="col-12 col-md-4 text-center">
+        {% if profile.image_url %}
+          <img src="{{ profile.image.url }}" alt="Profile Image" class="profile-img">
+        {% else %}
+          <img src="{% static 'images/default_user.png' %}" alt="Default Profile" class="profile-img">
+        {% endif %}
+      </div>
+      <!-- Информация о пользователе справа -->
+      <div class="col-12 col-md-8 text-left">
+        <h2 class="profile-name">{{ profile.get_full_name|default:profile.username }}</h2>
+        <!-- Разделительная линия -->
+        <hr class="profile-divider">
+        <p><strong>Address:</strong> {{ profile.address }}</p>
+        <p><strong>Shop Name:</strong> {{ profile.store_name }}</p>
+        <p><strong>Total Orders:</strong> {{ profile.total_order_value }} som</p>
+        <a href="{% url 'profile:edit_profile' %}" class="btn btn-primary edit-profile-btn mt-3">Изменить</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Блок графиков -->
+  <div class="charts-wrapper">
+    <div class="chart-section mt-5">
+      <h3>Траты по месяцам ({{ now|date:"Y" }})</h3>
+      <canvas id="monthlyChart"></canvas>
+    </div>
+    <div class="chart-section mt-5">
+      <h3>Траты по дням (текущий месяц)</h3>
+      <canvas id="dailyChart"></canvas>
+    </div>
+    <div class="chart-section mt-5">
+      <h3>Сравнение трат: Овощи vs Фрукты</h3>
+      <canvas id="histChart"></canvas>
+    </div>
+    <div class="chart-section mt-5">
+      <h3>Распределение заказов по статусам</h3>
+      <canvas id="statusPieChart"></canvas>
+    </div>
+    <div class="chart-section mt-5">
+      <h3>Топ-5 продаваемых продуктов по выручке</h3>
+      <canvas id="topProductsChart"></canvas>
+    </div>
+    <div class="chart-section mt-5">
+      <h3>Динамика продаж по неделям ({{ now|date:"Y" }})</h3>
+      <canvas id="weeklyChart"></canvas>
+    </div>
+  </div>
+</div>
+
+
+<!-- Подключение Chart.js через CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Получаем данные из представления
+    const chartData = JSON.parse('{{ chart_data|escapejs }}');
+
+    // --- График 1: Ежемесячные траты (линейный график) ---
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    const monthlyChart = new Chart(monthlyCtx, {
+        type: 'line',
+        data: {
+            labels: chartData.monthly_labels,
+            datasets: [{
+                label: 'Ежемесячные траты',
+                data: chartData.monthly_values,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // --- График 2: Дневные траты (столбчатый график) ---
+    const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+    const totalDaily = chartData.daily_values.reduce((sum, val) => sum + val, 0);
+    const dailyChart = new Chart(dailyCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.daily_labels,
+            datasets: [{
+                label: 'Траты за день',
+                data: chartData.daily_values,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            const percentage = totalDaily > 0 ? ((value / totalDaily) * 100).toFixed(2) : 0;
+                            return `${label}: ${value} ( ${percentage}% )`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // --- График 3: Сравнение расходов на овощи и фрукты (Pie Chart) ---
+    const pieCtx = document.getElementById('histChart').getContext('2d');
+    const totalVegFruit = chartData.veg_total + chartData.fruit_total;
+    const pieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Овощи', 'Фрукты'],
+            datasets: [{
+                data: [chartData.veg_total, chartData.fruit_total],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            const percentage = totalVegFruit > 0
+                                ? ((value / totalVegFruit) * 100).toFixed(2)
+                                : 0;
+                            return `${label}: ${value} ( ${percentage}% )`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // --- Доп. 1: Распределение заказов по статусам (Pie Chart) ---
+    const statusCtx = document.getElementById('statusPieChart').getContext('2d');
+    const totalStatus = chartData.orders_status_values.reduce((sum, val) => sum + val, 0);
+    const statusPieChart = new Chart(statusCtx, {
+        type: 'pie',
+        data: {
+            labels: chartData.orders_status_labels,
+            datasets: [{
+                data: chartData.orders_status_values,
+                backgroundColor: [
+                    'rgba(255, 205, 86, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 99, 132, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            const percentage = totalStatus > 0 ? ((value / totalStatus) * 100).toFixed(2) : 0;
+                            return `${label}: ${value} ( ${percentage}% )`;
+                        }
+                    }
+                }
+            },
+            responsive: true,
+        }
+    });
+
+    // --- Доп. 2: Топ-5 продаваемых продуктов (Bar Chart) ---
+    const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+    const totalTop = chartData.top_products_values.reduce((sum, val) => sum + val, 0);
+    const topProductsChart = new Chart(topProductsCtx, {
+        type: 'bar',
+        data: {
+            labels: chartData.top_products_labels,
+            datasets: [{
+                label: 'Выручка',
+                data: chartData.top_products_values,
+                backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            const percentage = totalTop > 0 ? ((value / totalTop) * 100).toFixed(2) : 0;
+                            return `${label}: ${value} ( ${percentage}% )`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // --- Доп. 3: Динамика продаж по неделям (линейный график) ---
+    const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+    const weeklyChart = new Chart(weeklyCtx, {
+        type: 'line',
+        data: {
+            labels: chartData.weekly_labels,
+            datasets: [{
+                label: 'Выручка по неделям',
+                data: chartData.weekly_values,
+                backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 2,
+                fill: true,
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+<script src="{% static 'profile/js/profile.js' %}"></script>
+
+{% endblock %}

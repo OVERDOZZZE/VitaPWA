@@ -1,0 +1,28 @@
+/* Стили для формы оформления заказа, применяемые только к checkout-form */
+.checkout-form {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.checkout-form textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.checkout-form button,
+.checkout-form a button {
+  margin-right: 10px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .checkout-form {
+    padding: 15px;
+  }
+}

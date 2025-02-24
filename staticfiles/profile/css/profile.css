@@ -1,0 +1,87 @@
+/* Стили для карточки профиля */
+.profile-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+  transition: box-shadow 0.3s ease;
+  margin-bottom: 10px;
+}
+.profile-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для изображения профиля */
+.profile-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #eee;
+}
+
+/* Стили для имени пользователя */
+.profile-name {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Стили для блока графиков */
+.charts-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Каждый блок графика */
+.chart-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+.chart-section:hover {
+  transform: translateY(-5px);
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 576px) {
+  .profile-card .row {
+    flex-direction: column;
+  }
+  .profile-card .col-12 {
+    text-align: center;
+  }
+  .profile-name {
+    font-size: 1.5rem;
+  }
+}
+/* Линия разделения между именем пользователя и остальными данными */
+.profile-divider {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 1rem 0;
+}
+
+/* Стили для кнопки Edit Profile */
+.edit-profile-btn {
+  background-color: #114c8b; /* Задаёт зелёный фон */
+  border: none;
+  padding: 0.2rem 1rem;
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+
+
+
+.edit-profile-btn:hover {
+  background-color: #218838;
+  text-decoration: none;
+}

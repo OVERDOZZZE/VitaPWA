@@ -1,0 +1,13 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+{% for category in categories %}
+    {{ category.name }}
+    {% if category.image_url %}
+    <img src=" {{ category.image_url }}" alt="" width="150", height="150">
+    {% else %}
+    <img src="{% static 'images/default_image.png' %}" alt="" width="150", height="150">
+    {% endif %}
+{% endfor %}
+{% endblock %}

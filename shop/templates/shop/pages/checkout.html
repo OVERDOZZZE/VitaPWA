@@ -1,0 +1,54 @@
+  {% extends 'shop/layouts/base.html' %}
+  {% load static %}
+
+  {% block extra_head %}
+    <link rel="stylesheet" href="{% static 'shop/css/checkout.css' %}">
+  <style>
+    /* Стили для формы оформления заказа, применяемые только к checkout-form */
+.checkout-form {
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.checkout-form textarea {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+  margin-bottom: 15px;
+}
+
+.checkout-form button,
+.checkout-form a button {
+  margin-right: 10px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .checkout-form {
+    padding: 15px;
+  }
+}
+
+  </style>
+  {% endblock %}
+
+  {% block content %}
+    <h3>Подтверждение заказа</h3>
+    <form class="checkout-form" method="post">
+      {% csrf_token %}
+      <textarea name="comment" placeholder="Комментарий (необязательно)"></textarea><br>
+      <button id="order-btn" type="submit">
+        <i class="fas fa-check"></i> Оформить заказ
+      </button>
+      <a href="{% url 'shop:cart' %}">
+        <button type="button">
+          <i class="fas fa-times"></i> Отмена
+        </button>
+      </a>
+    </form>
+    <script src="{% static 'shop/js/checkout.js' %}"></script>
+  {% endblock %}

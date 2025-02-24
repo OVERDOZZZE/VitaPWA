@@ -1,0 +1,554 @@
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'shop/css/product_list.css' %}">
+<style>
+    /* Стили для формы поиска */
+form.search-form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.btn-remove,
+.btn-add-increment {
+  background: #114c8b;
+  color: rgb(238,234,234);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-remove:hover,
+.btn-add-increment:hover {
+  background: #032242; /* или другое состояние hover */
+}
+#search-input {
+  width: 70%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px #114c8b;
+}
+
+#search-btn {
+  padding: 8px 12px;
+  border: 1px solid #114c8b;
+  border-radius: 0 4px 4px 0;
+  background: #114c8b;
+  color: #fff;
+  transition: background 0.3s;
+}
+
+#search-btn:hover {
+  background: #032242;
+}
+
+/* Общий контейнер списка товаров */
+.product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Контейнер товара */
+.product {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+/* Изображение товара */
+.product-image {
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start;
+}
+
+.product-image img {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.product-price {
+  margin-top: 5px;
+  font-weight: bold;
+  color: #125421;
+
+}
+
+/* Информация о товаре */
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.product-name {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.product-code,
+.product-stock {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Контейнер кнопок корзины */
+.cart-controls {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Кнопка добавления товара */
+.btn-add-initial {
+  background: #114c8b;
+  color: rgb(238, 234, 234);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-add-initial:hover {
+  background: #114c8b;
+}
+
+/* Контролы изменения количества */
+.quantity-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+
+
+
+.quantity-input {
+  width: 40px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+/* Стили для пагинации */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.pagination a {
+  padding: 3px 7px;
+  border: 1px solid #114c8b;
+  border-radius: 4px;
+  background: #114c8b;
+  color: rgb(238, 234, 234);
+  transition: opacity 0.3s ease;
+  text-decoration: none;
+
+}
+
+.pagination a:hover {
+  background: #04264a;
+  opacity: 0.7;
+}
+
+.pagination span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+
+
+
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .product {
+    flex-direction: row;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .product-image {
+    flex-shrink: 0;
+  }
+
+  .product-image img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .product-price {
+    font-size: 0.9rem;
+  }
+
+  .product-info {
+    flex-grow: 1;
+  }
+
+  .cart-controls {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h3>Товары</h3>
+
+<form class="search-form" method="get" action="{% url 'shop:product_list' %}">
+    <input type="text" id="search-input" name="q" placeholder="Поиск товара" value="{{ request.GET.q }}">
+    <button id="search-btn"><i class="fas fa-search"></i> Найти</button>
+</form>
+
+<div class="product-list">
+{% for product in page_obj %}
+  <div class="product" data-product-id="{{ product.id }}" data-product-type="{{ product.type }}">
+      <div class="product-image">
+          {% if product.image %}
+              <img src="{{ product.image_url }}" alt="{{ product.formatted_name }}">
+          {% else %}
+              <img src="{% static 'images/default_item.png' %}" alt="{{ product.formatted_name }}">
+          {% endif %}
+          <p class="product-price">{{ product.formatted_price }}</p>
+      </div>
+      
+      <div class="product-info">
+          <p class="product-name">{{ product.formatted_name }}</p>
+          <p class="product-code">Код: {{ product.code }}</p>
+          <p class="product-stock">На складе: {{ product.formatted_stock }}</p>
+      </div>
+
+      
+
+      <div class="cart-controls">
+            <button class="btn-add-initial" data-product-id="{{ product.id }}">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <div class="quantity-controls" style="display: none;">
+                <button class="btn-remove" data-product-id="{{ product.id }}">
+                   <i class="fa-solid fa-minus"></i>
+                </button>
+                <input type="number"
+                       class="quantity-input"
+                       data-product-id="{{ product.id }}"
+                       value="1"
+                       min="1"
+                       step="{% if product.type == 'unit' %}1{% else %}0.1{% endif %}">
+                <button class="btn-add-increment" data-product-id="{{ product.id }}">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+      </div>
+
+
+
+  </div>
+{% endfor %}
+</div>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-chevron-left"></i></a>
+    {% endif %}
+
+    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-chevron-right"></i></a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+
+{{ session_cart|json_script:"session-cart-data" }}
+<!--<script src="{% static 'shop/js/cart.js' %}"></script>-->
+
+{% block extra_js %}
+  <script src="{% static 'shop/js/product_list.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Функция для получения CSRF-токена из cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    // Функция для обновления количества уникальных товаров в корзине в header
+    function updateCartCount() {
+        fetch('/cart/count/')
+            .then(response => response.json())
+            .then(data => {
+                const cartCountElem = document.getElementById('cart-count');
+                if (cartCountElem) {
+                    cartCountElem.textContent = data.cart_item_count;
+                }
+            });
+    }
+
+    // При загрузке страницы — обновляем состояние элементов управления для добавленных товаров
+    const sessionCartElem = document.getElementById('session-cart-data');
+    if (sessionCartElem) {
+        const sessionCart = JSON.parse(sessionCartElem.textContent);
+        for (let productId in sessionCart) {
+            const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+            if (productDiv) {
+                const btnInitial = productDiv.querySelector('.btn-add-initial');
+                if (btnInitial) {
+                    btnInitial.style.display = 'none';
+                }
+                const qtyControls = productDiv.querySelector('.quantity-controls');
+                if (qtyControls) {
+                    qtyControls.style.display = 'inline-block';
+                }
+                const input = productDiv.querySelector('.quantity-input');
+                if (input) {
+                    input.value = sessionCart[productId];
+                }
+            }
+        }
+    }
+
+    // ОБРАБОТЧИК для начальной кнопки "Добавить (+)"
+    document.querySelectorAll('.btn-add-initial').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            fetch('/cart/add/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: `product_id=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.quantity) {
+                    const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+                    if (productDiv) {
+                        productDiv.querySelector('.btn-add-initial').style.display = 'none';
+                        const qtyControls = productDiv.querySelector('.quantity-controls');
+                        qtyControls.style.display = 'inline-block';
+                        const input = qtyControls.querySelector('.quantity-input');
+                        input.value = data.quantity;
+                        updateCartCount();
+                    }
+                }
+            });
+        });
+    });
+
+    // ОБРАБОТЧИК для кнопки увеличения количества (с учетом типа продукта)
+    document.querySelectorAll('.btn-add-increment').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+            const productType = productDiv.dataset.productType; // Читаем тип продукта из data-атрибута
+            const input = productDiv.querySelector('.quantity-input');
+
+            // Определяем шаг: 1 для unit и 0.1 для weight
+            let step = (productType === 'unit') ? 1 : 0.1;
+            let newQuantity = parseFloat(input.value) + step;
+
+            // Округляем значение в зависимости от типа
+            if (productType === 'unit') {
+                newQuantity = Math.round(newQuantity);
+            } else {
+                newQuantity = Math.round(newQuantity * 10) / 10;
+            }
+            updateCart(productId, newQuantity, input, productDiv);
+        });
+    });
+
+    // ОБРАБОТЧИК для кнопки уменьшения количества (с учетом типа продукта)
+    document.querySelectorAll('.btn-remove').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+            const productType = productDiv.dataset.productType;
+            const input = productDiv.querySelector('.quantity-input');
+
+            let step = (productType === 'unit') ? 1 : 0.1;
+            let newQuantity = parseFloat(input.value) - step;
+
+            if (productType === 'unit') {
+                newQuantity = Math.round(newQuantity);
+            } else {
+                newQuantity = Math.round(newQuantity * 10) / 10;
+            }
+            updateCart(productId, newQuantity, input, productDiv);
+        });
+    });
+
+    // ОБРАБОТЧИК для ручного изменения количества в поле ввода (на странице списка товаров)
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const productId = this.dataset.productId;
+            const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+            const productType = productDiv.dataset.productType;
+            let newQuantity = parseFloat(this.value);
+
+            if (productType === 'unit') {
+                newQuantity = Math.round(newQuantity);
+            } else {
+                newQuantity = Math.round(newQuantity * 10) / 10;
+            }
+            updateCart(productId, newQuantity, this, productDiv);
+        });
+    });
+
+    // ОБРАБОТЧИК для изменения количества на странице корзины
+    document.querySelectorAll('.quantity-input-cart').forEach(input => {
+        input.addEventListener('change', function() {
+            const productId = this.dataset.productId;
+            // Если на строке корзины есть data-атрибут с типом, то используем его
+            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+            let productType = 'weight'; // По умолчанию предполагаем weight
+            if (row && row.dataset.productType) {
+                productType = row.dataset.productType;
+            }
+            let newQuantity = parseFloat(this.value);
+
+            if (productType === 'unit') {
+                newQuantity = Math.round(newQuantity);
+            } else {
+                newQuantity = Math.round(newQuantity * 10) / 10;
+            }
+            updateCart(productId, newQuantity, this, null, true);
+        });
+    });
+
+    // ОБРАБОТЧИК для кнопки "Удалить" в корзине
+    document.querySelectorAll('.btn-remove-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.dataset.productId;
+            fetch('/cart/remove/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: `product_id=${productId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                if (row) {
+                    row.remove();
+                }
+                updateCartTotal();
+                updateCartCount();
+            });
+        });
+    });
+
+    // Функция для обновления количества товара через AJAX
+    function updateCart(productId, newQuantity, inputElement, productDiv, isCartPage = false) {
+        if (newQuantity < 1) {
+            newQuantity = 0;
+        }
+        fetch('/cart/update/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken,
+            },
+            body: `product_id=${productId}&quantity=${newQuantity}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.quantity > 0) {
+                if (inputElement) inputElement.value = data.quantity;
+                if (productDiv) {
+                    const qtyControls = productDiv.querySelector('.quantity-controls');
+                    qtyControls.style.display = 'inline-block';
+                    const initialAdd = productDiv.querySelector('.btn-add-initial');
+                    if (initialAdd) initialAdd.style.display = 'none';
+                }
+            } else {
+                if (productDiv) {
+                    const qtyControls = productDiv.querySelector('.quantity-controls');
+                    if (qtyControls) qtyControls.style.display = 'none';
+                    const initialAdd = productDiv.querySelector('.btn-add-initial');
+                    if (initialAdd) initialAdd.style.display = 'inline-block';
+                }
+                if (isCartPage) {
+                    const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+                    if (row) row.remove();
+                }
+            }
+            if (isCartPage) {
+                updateCartTotal();
+            }
+            updateCartCount();
+        });
+    }
+
+    // Функция для обновления итоговой суммы в корзине
+    function updateCartTotal() {
+        let total = 0;
+        document.querySelectorAll('tr[data-product-id]').forEach(row => {
+            const productId = row.getAttribute('data-product-id');
+            const input = row.querySelector('.quantity-input-cart');
+            const quantity = parseFloat(input.value);
+            const priceCell = row.children[1];
+            const price = parseFloat(priceCell.textContent);
+            const itemTotal = quantity * price;
+            total += itemTotal;
+            const itemTotalCell = row.querySelector('.item-total');
+            itemTotalCell.textContent = itemTotal.toFixed(2);
+        });
+        const totalElem = document.getElementById('cart-total');
+        if (totalElem) {
+            totalElem.textContent = total.toFixed(2);
+        }
+    }
+});
+
+</script>
+{% endblock %}
+{% endblock %}

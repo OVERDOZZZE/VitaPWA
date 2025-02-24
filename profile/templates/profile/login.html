@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Логин — Modern &amp; Fancy</title>
+  <!-- Импорт современного шрифта Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Анимированные стили (Animate.css) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- particles.js для анимированного фона -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <style>
+    /* Определение CSS-переменных для темы */
+    :root {
+      /* --bg-color-1: #667eea;
+      --bg-color-2: #764ba2; */
+      --bg-color-1: #4455aa;  /* более насыщенный цвет */
+      --bg-color-2: #aa5577; 
+
+      --font-color: #fff;
+      --input-bg: rgba(255,255,255,0.2);
+      --button-bg: #fff;
+      --button-text: #333;
+    }
+    .theme-light {
+      --bg-color-1: #fdfbfb;
+      --bg-color-2: #ebedee;
+      --font-color: #333;
+      --input-bg: #fff;
+      --button-bg: #333;
+      --button-text: #fff;
+    }
+    /* Сброс стилей */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      overflow: hidden;
+      /* background: linear-gradient(135deg, var(--bg-color-1), var(--bg-color-2));
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite; */
+      background: linear-gradient(135deg, var(--bg-color-1), var(--bg-color-2));
+      background-size: 200% 200%;  /* уменьшен для резкости переходов */
+      animation: gradientBG 10s ease infinite;  /* более быстрая анимация */
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transition: background 0.5s ease;
+      color: var(--font-color);
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    /* Анимированный фон для particles.js */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    /* Кнопка переключения темы */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+      z-index: 3;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: background 0.3s, transform 0.2s;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.05);
+    }
+    /* Логотип VITA */
+    #logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 80px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      color: #fff; /* всегда белый */
+      user-select: none;
+      z-index: 2;
+    }
+    /* Внешний контейнер для каждой буквы — для hover-эффекта */
+    .logo-letter-container {
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    /* Внутренний контейнер с анимацией левитации */
+    .logo-letter {
+      display: inline-block;
+      animation: levitate 3s ease-in-out infinite;
+    }
+    /* Разные задержки для букв, чтобы они двигались не синхронно */
+    #logo .logo-letter-container:nth-child(1) .logo-letter { animation-delay: 0s; }
+    #logo .logo-letter-container:nth-child(2) .logo-letter { animation-delay: 0.2s; }
+    #logo .logo-letter-container:nth-child(3) .logo-letter { animation-delay: 0.4s; }
+    #logo .logo-letter-container:nth-child(4) .logo-letter { animation-delay: 0.6s; }
+    @keyframes levitate {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    /* Контейнер формы логина */
+    .login-container {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+      width: 350px;
+      animation: fadeIn 1s ease-out;
+    }
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--font-color);
+    }
+    .login-container form {
+      display: flex;
+      flex-direction: column;
+    }
+    .login-container input {
+      margin-bottom: 15px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+      background: var(--input-bg);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .login-container input:focus {
+      box-shadow: 0 0 8px var(--font-color);
+      transform: scale(1.02);
+    }
+    .login-container button {
+      position: relative;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .login-container button:hover {
+      background: #f1f1f1;
+      transform: scale(1.02);
+    }
+    /* Эффект "рябь" при клике на кнопку */
+    .login-container button:after {
+      content: "";
+      position: absolute;
+      background: rgba(0,0,0,0.2);
+      border-radius: 50%;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1);
+      transition: transform 0.5s, opacity 1s;
+    }
+    .login-container button:active:after {
+      transform: scale(20);
+      opacity: 0;
+      transition: 0s;
+    }
+    /* Прелоадер для задержки */
+    .preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color-2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .preloader .loader {
+      border: 6px solid rgba(255,255,255,0.3);
+      border-top: 6px solid #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    /* Анимация погружения при логине */
+    @keyframes dive {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+    }
+    .dive-animation {
+      animation: dive 1s ease forwards;
+    }
+    #background-music {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Анимированный фон -->
+  <div id="particles-js"></div>
+
+  <!-- Кнопка переключения темы -->
+  <button class="theme-toggle" onclick="toggleTheme()">Сменить тему</button>
+
+  <!-- Прелоадер (задержка 1 секунда) -->
+  <div class="preloader" id="preloader">
+    <div class="loader"></div>
+  </div>
+
+
+
+<audio id="background-music" loop autoplay style="display:none;">
+  <source src="https://ia801208.us.archive.org/0/items/InterstellarMainThemeExtraExtendedSoundtrackByHansZimmer/Interstellar%20Main%20Theme%20-%20Extra%20Extended%20-%20Soundtrack%20by%20Hans%20Zimmer.mp3" type="audio/mp3">
+  Ваш браузер не поддерживает элемент audio.
+</audio>
+
+
+
+  <!-- Логотип VITA -->
+  <div id="logo">
+    <span class="logo-letter-container"><span class="logo-letter">V</span></span>
+    <span class="logo-letter-container"><span class="logo-letter">I</span></span>
+    <span class="logo-letter-container"><span class="logo-letter">T</span></span>
+    <span class="logo-letter-container"><span class="logo-letter">A</span></span>
+  </div>
+
+  <!-- Контейнер логина -->
+  <div class="login-container animate__animated animate__fadeInDown">
+    {% if user.is_authenticated %}
+      <h2>Профиль</h2>
+      <form action="{% url 'profile:logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Выход</button>
+      </form>
+    {% else %}
+      <h2>Вход</h2>
+      <form id="login-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <script>
+    // Скрытие прелоадера через 1 секунду после загрузки страницы
+    window.addEventListener('load', function() {
+      setTimeout(function(){
+        document.getElementById('preloader').style.display = 'none';
+      }, 1000);
+    });
+
+    // Инициализация particles.js для анимированного фона
+    function initParticles(color) {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": { "enable": true, "value_area": 800 }
+          },
+          "color": { "value": color },
+          "shape": { "type": "circle" },
+          "opacity": { "value": 0.5, "random": false },
+          "size": { "value": 3, "random": true },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": color,
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 3,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out"
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": { "enable": true, "mode": "repulse" },
+            "onclick": { "enable": true, "mode": "push" }
+          },
+          "modes": {
+            "repulse": { "distance": 100, "duration": 0.4 },
+            "push": { "particles_nb": 4 }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+    // Запуск с текущим цветом (#ffffff для темной темы)
+    initParticles("#ffffff");
+
+    // Функция переключения темы
+    function toggleTheme() {
+      document.body.classList.toggle('theme-light');
+      let newColor = document.body.classList.contains('theme-light') ? "#333333" : "#ffffff";
+      document.getElementById('particles-js').innerHTML = "";
+      initParticles(newColor);
+    }
+
+    // Эффект подъёма букв при наведении на логотип
+    const logo = document.getElementById('logo');
+    if (logo) {
+      logo.addEventListener('mousemove', function(e) {
+        const letters = document.querySelectorAll('.logo-letter-container');
+        letters.forEach(letter => {
+          const rect = letter.getBoundingClientRect();
+          const letterCenterX = rect.left + rect.width / 2;
+          const letterCenterY = rect.top + rect.height / 2;
+          const dx = e.clientX - letterCenterX;
+          const dy = e.clientY - letterCenterY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const maxDistance = 100; // пороговое значение
+          let lift = 0;
+          if(distance < maxDistance) {
+            lift = (maxDistance - distance) / maxDistance * 15; // максимум 15px
+          }
+          letter.style.transform = `translateY(-${lift}px)`;
+        });
+      });
+      logo.addEventListener('mouseleave', function() {
+        const letters = document.querySelectorAll('.logo-letter-container');
+        letters.forEach(letter => {
+          letter.style.transform = `translateY(0)`;
+        });
+      });
+    }
+
+// Анимация погружения при отправке формы логина
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+  loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const loginContainer = document.querySelector('.login-container');
+    loginContainer.classList.add('dive-animation');
+    // Добавляем анимацию для логотипа VITA
+    document.getElementById('logo').classList.add('dive-animation');
+    // После завершения анимации отправляем форму
+    setTimeout(() => {
+      loginForm.submit();
+    }, 1000); // длительность анимации 1 секунда
+  });
+}
+window.addEventListener('load', function() {
+  const music = document.getElementById('background-music');
+  if (music) {
+    music.volume = 1; // громкость от 0 до 1 (20%)
+    // Пробуем воспроизвести музыку; если автозапуск заблокирован, ловим ошибку
+    music.play().catch(error => {
+      console.log("Автозапуск музыки заблокирован. Требуется взаимодействие пользователя.", error);
+      // При необходимости можно отобразить кнопку для ручного запуска музыки
+    });
+  }
+});
+  </script>
+</body>
+</html>
