@@ -1,54 +1,32 @@
-  {% extends 'shop/layouts/base.html' %}
-  {% load static %}
+{% extends 'shop/layouts/base.html' %}
+{% load static %}
 
-  {% block extra_head %}
+{% block extra_head %}
     <link rel="stylesheet" href="{% static 'shop/css/checkout.css' %}">
-  <style>
-    /* Стили для формы оформления заказа, применяемые только к checkout-form */
-.checkout-form {
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  max-width: 500px;
-  margin: 0 auto;
-}
+{% endblock %}
 
-.checkout-form textarea {
-  width: 100%;
-  min-height: 100px;
-  resize: vertical;
-  margin-bottom: 15px;
-}
+{% block content %}
+    <section class="checkout-container" aria-label="Оформление заказа">
+        <h1 class="checkout-title">Подтверждение заказа</h1>
+        
+        <form class="checkout-form" method="post" id="checkout-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="comment">Комментарий (необязательно):</label>
+                <textarea name="comment" id="comment" placeholder="Введите ваш комментарий..." aria-label="Комментарий к заказу"></textarea>
+            </div>
+            <div class="form-actions">
+                <button id="order-btn" type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Оформить заказ
+                </button>
+                <a href="{% url 'shop:cart' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Отмена
+                </a>
+            </div>
+        </form>
+    </section>
+{% endblock %}
 
-.checkout-form button,
-.checkout-form a button {
-  margin-right: 10px;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-  .checkout-form {
-    padding: 15px;
-  }
-}
-
-  </style>
-  {% endblock %}
-
-  {% block content %}
-    <h3>Подтверждение заказа</h3>
-    <form class="checkout-form" method="post">
-      {% csrf_token %}
-      <textarea name="comment" placeholder="Комментарий (необязательно)"></textarea><br>
-      <button id="order-btn" type="submit">
-        <i class="fas fa-check"></i> Оформить заказ
-      </button>
-      <a href="{% url 'shop:cart' %}">
-        <button type="button">
-          <i class="fas fa-times"></i> Отмена
-        </button>
-      </a>
-    </form>
+{% block extra_js %}
     <script src="{% static 'shop/js/checkout.js' %}"></script>
-  {% endblock %}
+{% endblock %}

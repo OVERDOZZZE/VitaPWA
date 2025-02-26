@@ -15,82 +15,111 @@ from django.contrib import messages
 from django.utils.html import strip_tags
 from django.db.models import Case, When, Value, IntegerField
 
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_POST
+from .models import Product
 
 
 @login_required
 @require_POST
 def add_to_cart(request):
+    """Add a product to the user's cart or increment its quantity."""
     product_id = request.POST.get('product_id')
     if not product_id:
-        return JsonResponse({'error': 'Не передан идентификатор продукта.'}, status=400)
+        return JsonResponse({'error': 'Product ID is required.'}, status=400)
+
+    # Validate product exists
+    get_object_or_404(Product, pk=product_id)
+
     cart = request.session.get('cart', {})
     if product_id in cart:
-        # При повторном добавлении увеличиваем на 0.1 и округляем до одного знака
+        # Increment by 0.1 and round to 1 decimal place
         cart[product_id] = round(float(cart[product_id]) + 0.1, 1)
     else:
-        # Первое добавление – устанавливаем количество 1.0
+        # Initial quantity
         cart[product_id] = 1.0
+
     request.session['cart'] = cart
+    request.session.modified = True  # Ensure session saves
     return JsonResponse({'product_id': product_id, 'quantity': cart[product_id]})
 
 
 @login_required
 @require_POST
 def update_cart(request):
+    """Update the quantity of a product in the cart."""
     product_id = request.POST.get('product_id')
     quantity = request.POST.get('quantity')
+
     if not product_id or quantity is None:
-        return JsonResponse({'error': 'Некорректные данные.'}, status=400)
+        return JsonResponse({'error': 'Invalid data provided.'}, status=400)
+
     try:
         quantity = float(quantity)
-        quantity = round(quantity, 1)
-        if quantity < 0:
-            quantity = 0.0
+        quantity = max(round(quantity, 1), 0.0)  # Ensure non-negative
     except ValueError:
-        return JsonResponse({'error': 'Неверное количество.'}, status=400)
+        return JsonResponse({'error': 'Invalid quantity value.'}, status=400)
+
+    # Validate product exists
+    get_object_or_404(Product, pk=product_id)
+
     cart = request.session.get('cart', {})
     if quantity > 0:
         cart[product_id] = quantity
-    else:
-        if product_id in cart:
-            del cart[product_id]
+    elif product_id in cart:
+        del cart[product_id]
+
     request.session['cart'] = cart
+    request.session.modified = True
     return JsonResponse({'product_id': product_id, 'quantity': cart.get(product_id, 0)})
 
 
 @login_required
 @require_POST
 def remove_from_cart(request):
+    """Remove a product from the cart."""
     product_id = request.POST.get('product_id')
     if not product_id:
-        return JsonResponse({'error': 'Не передан идентификатор продукта.'}, status=400)
+        return JsonResponse({'error': 'Product ID is required.'}, status=400)
+
     cart = request.session.get('cart', {})
     if product_id in cart:
         del cart[product_id]
-    request.session['cart'] = cart
+        request.session['cart'] = cart
+        request.session.modified = True
+
     return JsonResponse({'product_id': product_id, 'quantity': 0})
 
 
 @login_required
 def cart(request):
+    """Display the user's cart contents."""
     cart = request.session.get('cart', {})
     cart_items = []
-    total = 0
+    total = 0.0
+
     for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, pk=product_id)
-        item_total = float(product.price) * quantity
-        total += item_total
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'item_total': round(item_total, 2),
-        })
+        try:
+            product = get_object_or_404(Product, pk=product_id)
+            item_total = float(product.price) * float(quantity)
+            total += item_total
+            cart_items.append({
+                'product': product,
+                'quantity': float(quantity),
+                'item_total': round(item_total, 2),
+            })
+        except Exception as e:
+            # Log error and skip invalid items
+            print(f"Error processing cart item {product_id}: {e}")
+            continue
+
     context = {
         'cart_items': cart_items,
         'total': round(total, 2),
-        'cart_quantity': len(cart_items)
+        'cart_quantity': len(cart_items),
     }
-
     return render(request, 'shop/pages/cart.html', context)
 
 
@@ -222,7 +251,8 @@ def product_list(request):
         'page_obj': page_obj,
         'cart_items': cart_items,
         'session_cart': cart,
-        'cart_quantity': len(cart)
+        'cart_quantity': len(cart),
+        'products_total': len(products)
     }
     return render(request, 'shop/pages/product_list.html', context)
 

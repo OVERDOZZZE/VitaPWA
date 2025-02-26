@@ -2,12 +2,130 @@
 {% load static %}
 
 {% block content %}
-{% for category in categories %}
-    {{ category.name }}
-    {% if category.image_url %}
-    <img src=" {{ category.image_url }}" alt="" width="150", height="150">
-    {% else %}
-    <img src="{% static 'images/default_image.png' %}" alt="" width="150", height="150">
-    {% endif %}
-{% endfor %}
+<style>
+  /* Container styling */
+
+
+  /* Page heading */
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  /* Categories row with wrapping */
+  .categories-row {
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to next line */
+    gap: 1.5rem; /* Space between items */
+    justify-content: center; /* Centers items horizontally */
+  }
+
+  /* Category card */
+  .category-card {
+    width: 230px; /* Fixed width for consistency */
+    height: 230px; /* Fixed height to match original image size */
+    background-size: cover; /* Ensures background image covers the card */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents tiling */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+    position: relative; /* For overlay positioning */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .category-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+  }
+
+  /* Overlay for readability */
+  .category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Dark overlay for contrast */
+    transition: background-color 0.2s ease-in-out;
+  }
+  .category-card:hover .category-overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* Darkens on hover */
+  }
+
+  /* Category name */
+  .category-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff; /* White text for contrast on background */
+    text-align: center;
+    position: relative; /* Stays above overlay */
+    z-index: 1; /* Ensures text is above overlay */
+    padding: 0.5rem;
+    word-wrap: break-word; /* Prevents overflow */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); /* Improves readability */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .category-card {
+      width: 200px;
+      height: 120px;
+    }
+    .category-name {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .container {
+      padding: 0 0.5rem;
+    }
+    .page-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .categories-row {
+      gap: 1rem;
+    }
+    .category-card {
+      width: 160px;
+      height: 100px;
+    }
+    .category-name {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .page-title {
+      font-size: 1.25rem;
+    }
+    .category-card {
+      width: 140px;
+      height: 90px;
+    }
+    .category-name {
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<div class="container">
+  <h1 class="page-title">Categories</h1>
+  <div class="categories-row">
+    {% for category in categories %}
+      <div class="category-card" style="background-image: url('{% if category.image_url %}{{ category.image_url }}{% else %}{% static 'images/default_image.png' %}{% endif %}');">
+        <div class="category-overlay"></div>
+        <h2 class="category-name">{{ category.name }}</h2>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

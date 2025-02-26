@@ -2,318 +2,71 @@
 {% load static %}
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  <title>{% block title %}Vita Cargo{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'shop/css/base.css' %}">
-  <link rel="manifest" href="{% static 'manifest.json' %}">
-  <meta name="theme-color" content="#000000">
-  <!-- Meta tags for iOS PWA -->
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Vita">
-  <link rel="apple-touch-icon" href="{% static 'images/icon_192.png' %}">
-
-  <!-- Подключение Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  {% block extra_head %}{% endblock %}
-  <style>
-    /* Сброс стилей и базовая настройка */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-:root {
-  --primary-color: #007BFF;
-  --secondary-color: #333;
-  --bg-color: #f4f4f4;
-  --header-bg: #fff;
-  --footer-bg: #333;
-  --footer-text: #fff;
-  --font-family: 'Helvetica Neue', Arial, sans-serif;
-  --transition-speed: 0.3s;
-}
-
-/* Обеспечиваем, чтобы html и body занимали всю высоту окна */
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-/* Делаем body flex-контейнером */
-body {
-  font-family: var(--font-family);
-  /* Для единообразного фона за футером */
-  background: #eaeaea;
-  color: var(--secondary-color);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* Обёртка для header и main с градиентным фоном */
-.wrapper {
-  flex: 1;
-  background: linear-gradient(to bottom, #ffffff, #eaeaea);
-}
-
-/* Основные контейнеры */
-header, main, footer {
-  width: 100%;
-}
-
-/* Header и навигация */
-header {
-  background: var(--header-bg);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border-bottom: 2px solid #e0e0e0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 10px 20px;
-}
-
-.main-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Левая часть навбара */
-.nav-left {
-  display: flex;
-  align-items: center;
-}
-
-/* Блок меню */
-.menu-wrapper {
-  position: relative;
-}
-
-.menu-toggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--secondary-color);
-  display: block; /* Показывается на мобильных устройствах */
-}
-
-.menu-container {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: var(--header-bg);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-  width: 250px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--transition-speed) ease-out;
-}
-
-.menu-container.expanded {
-  max-height: 500px; /* Достаточно для нескольких пунктов */
-}
-
-.menu-list {
-  list-style: none;
-}
-
-.menu-list li a {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: var(--secondary-color);
-  border-bottom: 1px solid #eaeaea;
-}
-
-.menu-list li a:hover {
-  background: #f0f0f0;
-}
-
-/* Логотип */
-.logo a {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: var(--secondary-color);
-  margin-left: 20px;
-}
-
-/* Правая часть навбара */
-.nav-right {
-  display: flex;
-  align-items: center;
-}
-
-.cart-link {
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: var(--secondary-color);
-  margin-right: 15px;
-  position: relative;
-}
-
-.cart-link span {
-  font-weight: bold;
-}
-
-.logout-form button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--secondary-color);
-}
-
-/* Основной контент */
-main {
-  padding: 20px;
-}
-
-/* Footer */
-footer {
-  background: var(--footer-bg);
-  color: var(--footer-text);
-  text-align: center;
-  padding: 20px;
-  margin-top: 20px;
-}
-
-/* Фокус и hover эффекты */
-a:focus, button:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-/* Адаптивные стили для мобильных устройств */
-@media (max-width: 768px) {
-  .main-nav {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px 15px;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .menu-container {
-    width: max-content;
-    left: 0;
-  }
-
-  .logo a {
-    margin-left: 10px;
-    font-size: 1.6rem;
-  }
-
-  .nav-right {
-    flex-direction: row;
-  }
-}
-
-#cart-count {
-  font-size: 1rem; /* или другой подходящий размер */
-}
-
-/* Глобальные стили для всех кнопок */
-button {
-  background-color: var(--primary-color);  /* Фон кнопки */
-  color: #fff;                             /* Цвет текста */
-  border: none;                            /* Без рамки */
-  border-radius: 4px;                      /* Скруглённые углы */
-  padding: 10px 15px;                      /* Отступы внутри кнопки */
-  font-size: 1rem;                         /* Размер шрифта */
-  cursor: pointer;                         /* Курсор - указатель при наведении */
-  transition: background var(--transition-speed) ease;
-}
-
-button:hover {
-  background-color: #0056b3;               /* Более тёмный фон при наведении */
-}
-
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aikol Enterprise{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'shop/css/base.css' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/icon_192.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-  {% if user.is_authenticated %}
-    <!-- Обёртка для header и main с градиентным фоном -->
-    <div class="wrapper">
-      <header>
-        <nav class="main-nav">
-          <div class="nav-left">
-            <div class="menu-wrapper">
-              <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
-              <div class="menu-container">
-                <ul class="menu-list">
-                  <li><a href="{% url 'shop:product_list' %}">Главная</a></li>
-                  <li><a href="{% url 'shop:order_list' %}">Заказы</a></li>
-                  <li><a href="{% url 'profile:profile' %}">Профиль</a></li>
-                  <li><a href="{% url 'shop:category_list' %}">Категории</a></li>
-                </ul>
-              </div>
+    <div class="page-wrapper">
+        {% if user.is_authenticated %}
+            <header class="header">
+                <div class="container">
+                    <nav class="nav">
+                        <div class="nav-left">
+                            <button class="menu-toggle" aria-label="Toggle menu">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <a href="{% url 'shop:product_list' %}" class="logo">
+                                Aikol Ent.<i class="fa-solid fa-seedling"></i>
+                            </a>
+                            <ul class="nav-menu">
+                                <li><a href="{% url 'shop:product_list' %}">Главная</a></li>
+                                <li><a href="{% url 'shop:order_list' %}">Заказы</a></li>
+                                <li><a href="{% url 'profile:profile' %}">Профиль</a></li>
+                                <li><a href="{% url 'shop:category_list' %}">Категории</a></li>
+                            </ul>
+                        </div>
+                        <div class="nav-right">
+                            <a href="{% url 'shop:cart' %}" class="cart" aria-label="Cart">
+                                <i class="fas fa-cart-shopping"></i>
+                                <span class="cart-count" id="cart-count">{{ cart_item_count }}</span>
+                            </a>
+                            <form action="{% url 'profile:logout' %}" method="post" class="logout-form">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-btn" aria-label="Logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+            <main class="main-content">
+                <div class="container">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="container">
+                    <p>&copy; 2025 Vita Cargo. Все права защищены.</p>
+                </div>
+            </footer>
+        {% else %}
+            <div class="auth-container">
+                <div class="auth-message">
+                    <h1>Пожалуйста, войдите в систему</h1>
+                    <a href="{% url 'profile:login' %}" class="btn btn-primary">Войти</a>
+                </div>
             </div>
-            <div class="logo">
-              <a href="{% url 'shop:product_list' %}">VITA <i class="fa-solid fa-carrot"></i></a>
-            </div>
-          </div>
-          <div class="nav-right">
-            <a href="{% url 'shop:cart' %}" class="cart-link">
-              <i class="fa-solid fa-cart-shopping"></i><span id="cart-count">{{ cart_item_count }}</span>
-            </a>
-            <form action="{% url 'profile:logout' %}" method="post" class="logout-form">
-              {% csrf_token %}
-              <button type="submit"><i class="fa-solid fa-right-from-bracket"></i></button>
-            </form>
-          </div>
-        </nav>
-      </header>
-      <main>
-        {% block content %}{% endblock %}
-      </main>
+        {% endif %}
     </div>
-    <footer>
-      <p>© 2025 Vita Cargo. Все права защищены.</p>
-    </footer>
-  {% else %}
-    <h1>Please Sign In</h1>
-  {% endif %}
-<!--  <script src="{% static 'shop/js/menu.js' %}"></script>-->
-  <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const menuContainer = document.querySelector(".menu-container");
 
-    if (menuToggle && menuContainer) {
-        menuToggle.addEventListener("click", function (event) {
-            menuContainer.classList.toggle("expanded");
-            event.stopPropagation(); // Предотвращает закрытие при клике на кнопку
-        });
-
-        // Закрытие меню при клике вне его
-        document.addEventListener("click", function (event) {
-            if (!menuToggle.contains(event.target) && !menuContainer.contains(event.target)) {
-                menuContainer.classList.remove("expanded");
-            }
-        });
-
-        // Предотвращает закрытие при клике внутри меню
-        menuContainer.addEventListener("click", function (event) {
-            event.stopPropagation();
-        });
-    }
-});
-    if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("{% static 'shop/js/sw.js' %}")
-            .then(reg => console.log("Service Worker Registered"))
-            .catch(err => console.log("Service Worker Registration Failed", err));
-    }
-
-</script>
-  {% block extra_js %}{% endblock %}
+    <script src="{% static 'shop/js/base.js' %}"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

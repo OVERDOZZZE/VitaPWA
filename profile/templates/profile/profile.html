@@ -4,43 +4,119 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'profile/css/profile.css' %}">
 <style>
-  /* Стили для карточки профиля */
+  /* Professional styles for profile card */
 .profile-card {
-  border: none;
-  border-radius: 12px;
-  overflow: hidden;
-  background-color: #fff;
-  transition: box-shadow 0.3s ease;
-  margin-bottom: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s ease-in-out;
 }
 .profile-card:hover {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Стили для изображения профиля */
+/* Profile image */
 .profile-img {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #eee;
+  border: 4px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для имени пользователя */
+/* Profile name */
 .profile-name {
-  font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
 }
 
-/* Стили для блока графиков */
+/* Profile info text */
+.profile-card p {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+.profile-card strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Profile divider */
+.profile-divider {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 1rem 0;
+}
+
+/* Edit profile button */
+.edit-profile-btn {
+  background-color: #1a4bb5db;
+  border: none;
+  padding: 0.1rem 1.1rem;
+  margin-top: 8px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+  text-decoration: none;
+  display: inline-block;
+}
+.edit-profile-btn:hover {
+  background-color: #1d4ed8;
+  text-decoration: none;
+}
+
+/* Statistics dropdown button */
+.stats-btn {
+  background-color: #1a4bb5db;
+  border: none;
+  padding: 0.75rem;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+  width: 100%; /* Full width */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem; /* Space between text and arrow */
+  margin-bottom: 1.5rem;
+}
+.stats-btn:hover {
+  background-color: #214dc6dc;
+}
+
+/* Arrow styling */
+.arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+.arrow.down {
+  transform: rotate(0deg);
+}
+.arrow.up {
+  transform: rotate(180deg);
+}
+
+/* Charts wrapper */
 .charts-wrapper {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  display: none; /* Hidden by default */
 }
 
-/* Каждый блок графика */
+/* Chart section */
 .chart-section {
   background: #fff;
   border-radius: 10px;
@@ -52,7 +128,7 @@
   transform: translateY(-5px);
 }
 
-/* Адаптивность для мобильных устройств */
+/* Responsive adjustments */
 @media (max-width: 576px) {
   .profile-card .row {
     flex-direction: column;
@@ -61,44 +137,19 @@
     text-align: center;
   }
   .profile-name {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
+  }
+  .profile-img {
+    margin-bottom: 1rem;
   }
 }
-/* Линия разделения между именем пользователя и остальными данными */
-.profile-divider {
-  border: 0;
-  border-top: 1px solid #ddd;
-  margin: 1rem 0;
-}
-
-/* Стили для кнопки Edit Profile */
-.edit-profile-btn {
-  background-color: #114c8b; /* Задаёт зелёный фон */
-  border: none;
-  padding: 0.2rem 1rem;
-  color: #fff;
-  font-weight: 500;
-  font-size: 12px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-}
-
-
-
-
-.edit-profile-btn:hover {
-  background-color: #218838;
-  text-decoration: none;
-}
-
 </style>
 
 <div class="container mt-4">
-  <!-- Карточка профиля -->
-  <div class="profile-card card shadow-lg p-4">
+  <!-- Profile card -->
+  <div class="profile-card card">
     <div class="row align-items-center">
-      <!-- Изображение профиля слева -->
+      <!-- Profile image -->
       <div class="col-12 col-md-4 text-center">
         {% if profile.image_url %}
           <img src="{{ profile.image.url }}" alt="Profile Image" class="profile-img">
@@ -106,23 +157,26 @@
           <img src="{% static 'images/default_user.png' %}" alt="Default Profile" class="profile-img">
         {% endif %}
       </div>
-      <!-- Информация о пользователе справа -->
+      <!-- Profile information -->
       <div class="col-12 col-md-8 text-left">
         <h2 class="profile-name">{{ profile.get_full_name|default:profile.username }}</h2>
-        <!-- Разделительная линия -->
         <hr class="profile-divider">
         <p><strong>Address:</strong> {{ profile.address }}</p>
         <p><strong>Shop Name:</strong> {{ profile.store_name }}</p>
         <p><strong>Total Orders:</strong> {{ profile.total_order_value }} som</p>
-        <a href="{% url 'profile:edit_profile' %}" class="btn btn-primary edit-profile-btn mt-3">Изменить</a>
+        <a href="{% url 'profile:edit_profile' %}" class="edit-profile-btn mt-3">Изменить</a>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- Statistics dropdown button -->
+  <button class="stats-btn" onclick="toggleStats()">
+    <span>Open Statistics</span>
+    <span class="arrow down">▼</span>
+  </button>
 
-  <!-- Блок графиков -->
-  <div class="charts-wrapper">
+  <!-- Charts section -->
+  <div class="charts-wrapper" id="chartsContainer">
     <div class="chart-section mt-5">
       <h3>Траты по месяцам ({{ now|date:"Y" }})</h3>
       <canvas id="monthlyChart"></canvas>
@@ -150,14 +204,29 @@
   </div>
 </div>
 
-
-<!-- Подключение Chart.js через CDN -->
+<!-- Chart.js and scripts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Получаем данные из представления
+    // Toggle statistics visibility
+    function toggleStats() {
+        const chartsContainer = document.getElementById('chartsContainer');
+        const statsBtn = document.querySelector('.stats-btn span:first-child');
+        const arrow = document.querySelector('.arrow');
+        if (chartsContainer.style.display === 'none' || chartsContainer.style.display === '') {
+            chartsContainer.style.display = 'flex';
+            statsBtn.textContent = 'Hide Statistics';
+            arrow.classList.remove('down');
+            arrow.classList.add('up');
+        } else {
+            chartsContainer.style.display = 'none';
+            statsBtn.textContent = 'Open Statistics';
+            arrow.classList.remove('up');
+            arrow.classList.add('down');
+        }
+    }
+
     const chartData = JSON.parse('{{ chart_data|escapejs }}');
 
-    // --- График 1: Ежемесячные траты (линейный график) ---
     const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
     const monthlyChart = new Chart(monthlyCtx, {
         type: 'line',
@@ -179,7 +248,6 @@
         }
     });
 
-    // --- График 2: Дневные траты (столбчатый график) ---
     const dailyCtx = document.getElementById('dailyChart').getContext('2d');
     const totalDaily = chartData.daily_values.reduce((sum, val) => sum + val, 0);
     const dailyChart = new Chart(dailyCtx, {
@@ -213,7 +281,6 @@
         }
     });
 
-    // --- График 3: Сравнение расходов на овощи и фрукты (Pie Chart) ---
     const pieCtx = document.getElementById('histChart').getContext('2d');
     const totalVegFruit = chartData.veg_total + chartData.fruit_total;
     const pieChart = new Chart(pieCtx, {
@@ -251,7 +318,6 @@
         }
     });
 
-    // --- Доп. 1: Распределение заказов по статусам (Pie Chart) ---
     const statusCtx = document.getElementById('statusPieChart').getContext('2d');
     const totalStatus = chartData.orders_status_values.reduce((sum, val) => sum + val, 0);
     const statusPieChart = new Chart(statusCtx, {
@@ -292,7 +358,6 @@
         }
     });
 
-    // --- Доп. 2: Топ-5 продаваемых продуктов (Bar Chart) ---
     const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
     const totalTop = chartData.top_products_values.reduce((sum, val) => sum + val, 0);
     const topProductsChart = new Chart(topProductsCtx, {
@@ -326,7 +391,6 @@
         }
     });
 
-    // --- Доп. 3: Динамика продаж по неделям (линейный график) ---
     const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
     const weeklyChart = new Chart(weeklyCtx, {
         type: 'line',

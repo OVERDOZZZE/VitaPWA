@@ -1,226 +1,206 @@
-/* Сброс стилей и базовая настройка */
+/* Reset and Base Styles */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-:root {
-  --primary-color: #007BFF;
-  --secondary-color: #333;
-  --bg-color: #f4f4f4;
-  --header-bg: #fff;
-  --footer-bg: #333;
-  --footer-text: #fff;
-  --font-family: 'Helvetica Neue', Arial, sans-serif;
-  --transition-speed: 0.3s;
-}
-
-/* Обеспечиваем, чтобы html и body занимали всю высоту окна */
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-/* Делаем body flex-контейнером */
 body {
-  font-family: var(--font-family);
-  /* Для единообразного фона за футером */
-  background: #eaeaea;
-  color: var(--secondary-color);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
 }
 
-/* Обёртка для header и main с градиентным фоном */
-.wrapper {
-  flex: 1;
-  background: linear-gradient(to bottom, #ffffff, #eaeaea);
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Основные контейнеры */
-header, main, footer {
-  width: 100%;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
-/* Header и навигация */
-header {
-  background: var(--header-bg);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  border-bottom: 2px solid #e0e0e0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 10px 20px;
+/* Header */
+.header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
-.main-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
 }
 
-/* Левая часть навбара */
 .nav-left {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-/* Блок меню */
-.menu-wrapper {
-  position: relative;
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #157d40;
+    text-decoration: none;
+}
+
+.logo i {
+    color: #e67e22;
 }
 
 .menu-toggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--secondary-color);
-  display: block; /* Показывается на мобильных устройствах */
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
 }
 
-.menu-container {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: var(--header-bg);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-  width: 250px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--transition-speed) ease-out;
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 25px;
 }
 
-.menu-container.expanded {
-  max-height: 500px; /* Достаточно для нескольких пунктов */
+.nav-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
 }
 
-.menu-list {
-  list-style: none;
+.nav-menu li a:hover {
+    color: #2ecc71;
 }
 
-.menu-list li a {
-  display: block;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: var(--secondary-color);
-  border-bottom: 1px solid #eaeaea;
-}
-
-.menu-list li a:hover {
-  background: #f0f0f0;
-}
-
-/* Логотип */
-.logo a {
-  font-size: 1.8rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: var(--secondary-color);
-  margin-left: 20px;
-}
-
-/* Правая часть навбара */
 .nav-right {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.cart-link {
-  font-size: 1.5rem;
-  text-decoration: none;
-  color: var(--secondary-color);
-  margin-right: 15px;
-  position: relative;
+.cart {
+    position: relative;
+    color: #333;
+    text-decoration: none;
+    font-size: 20px;
 }
 
-.cart-link span {
-  font-weight: bold;
+.cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e74c3c;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
 }
 
-.logout-form button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--secondary-color);
+.logout-btn {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
 }
 
-/* Основной контент */
-main {
-  padding: 20px;
+.logout-btn:hover {
+    color: #e74c3c;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px 0;
 }
 
 /* Footer */
-footer {
-  background: var(--footer-bg);
-  color: var(--footer-text);
-  text-align: center;
-  padding: 20px;
-  margin-top: 20px;
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
 }
 
-/* Фокус и hover эффекты */
-a:focus, button:focus {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
+/* Auth Container */
+.auth-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #2ecc71, #3498db);
 }
 
-/* Адаптивные стили для мобильных устройств */
+.auth-message {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #27ae60;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-  .main-nav {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px 15px;
-  }
-  
-  .menu-toggle {
-    display: block;
-  }
-  
-  .menu-container {
-    width: max-content;
-    left: 0;
-  }
-  
-  .logo a {
-    margin-left: 10px;
-    font-size: 1.6rem;
-  }
-  
-  .nav-right {
-    flex-direction: row;
-  }
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav {
+        flex-wrap: wrap;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
 }
-
-#cart-count {
-  font-size: 1rem; /* или другой подходящий размер */
-}
-
-/* Глобальные стили для всех кнопок */
-button {
-  background-color: var(--primary-color);  /* Фон кнопки */
-  color: #fff;                             /* Цвет текста */
-  border: none;                            /* Без рамки */
-  border-radius: 4px;                      /* Скруглённые углы */
-  padding: 10px 15px;                      /* Отступы внутри кнопки */
-  font-size: 1rem;                         /* Размер шрифта */
-  cursor: pointer;                         /* Курсор - указатель при наведении */
-  transition: background var(--transition-speed) ease;
-}
-
-button:hover {
-  background-color: #0056b3;               /* Более тёмный фон при наведении */
-}
-
-/* # This point is check point 
-
-
-#
-# */
-
-/* asdf;lkjasdf */
