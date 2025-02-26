@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                window.location.href = 'order_list/'; // Adjust this URL as needed
+                window.location.href = '{% url 'shop:order_list' %}' // Adjust this URL as needed
 
             } else {
                 const data = await response.json();
