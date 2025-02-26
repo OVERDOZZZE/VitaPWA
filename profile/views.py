@@ -196,7 +196,7 @@ def contact_view(request):
                 subject=subject,
                 body=text_content,
                 from_email=email,  # Reply-to email
-                to=['kyrgyzpink@gmail.com'],  # Recipient email
+                to=['kyrgyzpink@gmail.com',  'aikol.abdykadyrov22.08.00@gmail.com'],  # Recipient email
             )
             email_message.attach_alternative(html_content, "text/html")  # Attach HTML version
             email_message.send()
