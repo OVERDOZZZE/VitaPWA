@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru"> <!-- Changed lang to "ru" for Russian -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+    <title>Успех</title> <!-- Changed title to Russian -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: clamp(1rem, 5vw, 3rem);
+        }
+        .success-container {
+            background: white;
+            padding: clamp(1rem, 4vw, 2rem);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h2 {
+            font-size: clamp(1.25rem, 5vw, 2rem);
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        p {
+            font-size: clamp(0.875rem, 3vw, 1rem);
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.25rem);
+            border-radius: 5px;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+            transition: background 0.3s ease-in-out;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .success-container {
+                width: 95%;
+                padding: 1rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+        @media (min-width: 1200px) {
+            .success-container {
+                max-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <h2>Сообщение успешно отправлено!</h2> <!-- Translated to Russian -->
+        <p>Спасибо за обращение. Мы скоро с вами свяжемся.</p> <!-- Translated to Russian -->
+        <a href="{% url 'profile:contact_page' %}">Вернуться к форме </a> <!-- Translated to Russian -->
+    </div>
+</body>
+</html>

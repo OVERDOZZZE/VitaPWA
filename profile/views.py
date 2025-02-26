@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import CustomUser as Profile
+from .forms import ContactForm
+from django.core.mail import send_mail
 from .forms import UserUpdateForm, ProfileUpdateForm
+from django.http import HttpResponse
 
 
 @login_required
@@ -160,3 +162,43 @@ def profile_view(request):
         'chart_data': json.dumps(chart_data),
     }
     return render(request, 'profile/profile.html', context)
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            subject = 'Новый запрос'
+            address = form.cleaned_data['address']
+            store_name = form.cleaned_data['store_name']
+            phone_number = form.cleaned_data['phone_number']
+            message = form.cleaned_data['message']
+
+            # Construct email message
+            email_message = f"""Name: {name}\nEmail: {email}\n\nMessage:\n{message}
+Адрес: {address}
+Точка: {store_name}
+Номер телефона: {phone_number}
+Доп сообщение: {message}
+"""
+            # Send email
+            send_mail(
+                subject,
+                email_message,
+                email,  # Reply-to email
+                ['kyrgyzpink@gmail.com'],  # Recipient email
+                fail_silently=False,
+            )
+
+            return redirect('profile:success_page')  # Redirect after successful submission
+
+    else:
+        form = ContactForm()
+
+    return render(request, 'profile/contact_form.html', {'form': form})
+
+
+def success_page(request):
+    return render(request, 'profile/contact_success.html')
