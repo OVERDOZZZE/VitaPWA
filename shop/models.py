@@ -5,7 +5,6 @@ from django.templatetags.static import static
 from cloudinary.models import CloudinaryField
 
 
-
 class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
@@ -20,7 +19,7 @@ class Category(models.Model):
         'categories/',
         blank=True,
         null=True,
-        default='https://res.cloudinary.com/desy8wuw7/image/upload/v1740053714/default_item_mnkqtc.png'
+        default='https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/item_gndkrh.png'
     )
 
     def __str__(self):
@@ -31,7 +30,7 @@ class Category(models.Model):
         try:
             return self.image.url
         except:
-            return 0
+            return 'https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/item_gndkrh.png'
 
 
 class SubCategory(models.Model):
@@ -119,7 +118,7 @@ class Product(models.Model):
         'products/',
         blank=True,
         null=True,
-        default='https://res.cloudinary.com/desy8wuw7/image/upload/v1740053714/default_item_mnkqtc.png'
+        default='https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/item_gndkrh.png'
     )
 
     def __str__(self):
@@ -158,7 +157,7 @@ class Product(models.Model):
         try:
             return self.image.url
         except Exception:
-            return static('images/default_item.png')
+            return 'https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/item_gndkrh.png'
 
 
 class Order(models.Model):
@@ -212,6 +211,7 @@ class Order(models.Model):
         total = sum([item.quantity for item in items])
         return total
 
+
 class OrderItem(models.Model):
     class Meta:
         verbose_name = 'Предмет заказа'
@@ -250,28 +250,3 @@ class OrderItem(models.Model):
     @property
     def total_price(self):
         return round(self.quantity * self.product.price, 2)
-#
-# Покажи как мне реализовать функционал "корзины" на основе сессий ( то есть сбрасывается при выходе или окончании сессии) на моем сайте на Django. Используй JS где понадобится (отдельно от html файла). Части моего кода будут приведены ниже. Есть страница product_list.html со списком всех продуктов.
-#
-# 1. Надо, чтобы возле каждого продукта была кнопка "Добавить".
-# 2. При нажатии добавляется 1 единица продукта в корзину.
-# 3. Так же теперь появляются кнопка "Убавить" и посередине двух кнопок input показывающий количество уже добавленного количества (Минимум 1), и пользователь может вручную вводить количество товара в этот input.
-# 4. Если пользователь убавляет количество продукта до нуля, input и кнопка "Убавить" снова скрывается и остается только кнопка "Добавить" (Исходное положение)
-# 5. Значения в input и корзине сохраняются до окончания сессии
-#
-# Так же, должна быть страница cart.html, в которой будут отображаться все выбранные в корзину товары.
-# 1. Оттуда тоже можно регулировать количество выбранного продукта.
-# 2. Есть кнопка "Удалить", которая удалят продукт из корзины полностью
-# 3. Возле каждого продукта указана цена, выбранное количество и общая стоимость
-# 4. В самом конце списка указана общая сумма корзины
-# 5. На странице есть кнопка "Оформить", которая переносит на страницу checkout.html
-#
-# На странице checkout.html есть только кнопка "Подтвердить оформление", которая при нажатии создает Order с выбранными в корзине продуктами и опустошает корзину.
-#
-# Дополнительно: Если понадобится, можешь дополнять, изменять и удалять структуру предоставленного мною кода.
-# Доложи, если в моем коде есть логические конфликты, которые делают создание функционала корзины осложненным.
-#
-# Предоставь весь необходимый код.
-# Если есть вопросы по коду - задавай.
-#
-# КОД:

@@ -38,7 +38,7 @@ class CustomUser(AbstractUser):
         'users/',
         blank=True,
         null=True,
-        default='https://res.cloudinary.com/desy8wuw7/image/upload/v1740053714/default_profile_gg8l4z.png'
+        default='https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/profile_dqj2kj.png'
     )
 
     def __str__(self):
@@ -61,6 +61,6 @@ class CustomUser(AbstractUser):
         try:
             return self.image.url
         except:
-            return 0
+            return 'https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/profile_dqj2kj.png'
         
     
