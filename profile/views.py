@@ -188,7 +188,7 @@ def contact_view(request):
                 subject,
                 email_message,
                 email,  # Reply-to email
-                ['kyrgyzpink@gmail.com'],  # Recipient email
+                ['kyrgyzpink@gmail.com', 'aikol.abdykadyrov22.08.00@gmail.com'],  # Recipient email
                 fail_silently=False,
             )
 

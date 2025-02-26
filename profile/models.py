@@ -63,4 +63,3 @@ class CustomUser(AbstractUser):
         except:
             return 'https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/profile_dqj2kj.png'
         
-    
