@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Новый запрос через контактную форму</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #444;
+            margin-top: 20px;
+        }
+
+        .details {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #888;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Новый запрос через контактную форму</h2>
+
+
+        <div class="details">
+            <p><strong>Имя:</strong> {{ name }}</p>
+            <p><strong>Электронная почта:</strong> {{ email }}</p>
+            <p><strong>Сообщение:</strong> {{ message }}</p>
+        </div>
+
+        <div class="section-title">Контактная информация</div>
+        <div class="details">
+            <p><strong>Адрес:</strong> {{ address }}</p>
+            <p><strong>Название магазина:</strong> {{ store_name }}</p>
+            <p><strong>Номер телефона:</strong> {{ phone_number }}</p>
+        </div>
+
+        <div class="footer">
+            <p>Это письмо было автоматически сгенерировано с вашего сайта.</p>
+            <p><a href="https://b2b-aikol.vercel.app/admin/" class="button">Перейти на сайт</a></p>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -23,7 +23,7 @@
             {% for product in page_obj %}
                 <div class="product-card" data-product-id="{{ product.id }}" data-product-type="{{ product.type }}">
                     <div class="product-image">
-                        <img src="{% if product.image %}{{ product.image_url }}{% else %}{% static 'images/default_item.png' %}{% endif %}"
+                        <img src="{% if product.image %}{{ product.image_url }}{% else %}https://res.cloudinary.com/dblcrdx9m/image/upload/v1740573867/item_gndkrh.png{% endif %}"
                              alt="{{ product.formatted_name }}" loading="lazy">
                         <span class="price-tag">{{ product.formatted_price }}</span>
                     </div>
@@ -31,7 +31,7 @@
                         <div class="product-info">
                             <h2>{{ product.formatted_name }}</h2>
                             <p class="code">Код: {{ product.code }}</p>
-                            <p class="stock">На складе: {{ product.formatted_stock }}</p>
+<!--                            <p class="stock">На складе: {{ product.formatted_stock }}</p>-->
                         </div>
                         <div class="product-actions">
                             <button class="btn btn-add" data-product-id="{{ product.id }}">

@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ContactForm
-from django.core.mail import send_mail
 from .forms import UserUpdateForm, ProfileUpdateForm
-from django.http import HttpResponse
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from .forms import ContactForm
+
 
 
 @login_required
@@ -176,21 +179,27 @@ def contact_view(request):
             phone_number = form.cleaned_data['phone_number']
             message = form.cleaned_data['message']
 
-            # Construct email message
-            email_message = f"""Name: {name}\nEmail: {email}\n\nMessage:\n{message}
-Адрес: {address}
-Точка: {store_name}
-Номер телефона: {phone_number}
-Доп сообщение: {message}
-"""
+            # Render HTML email content
+            html_content = render_to_string('profile/contact_email.html', {
+                'name': name,
+                'email': email,
+                'address': address,
+                'store_name': store_name,
+                'phone_number': phone_number,
+                'message': message,
+                'site_url': request.build_absolute_uri('/'),  # For the "View Site" button
+            })
+            text_content = strip_tags(html_content)  # Plain-text version for non-HTML clients
+
             # Send email
-            send_mail(
-                subject,
-                email_message,
-                email,  # Reply-to email
-                ['kyrgyzpink@gmail.com', 'aikol.abdykadyrov22.08.00@gmail.com'],  # Recipient email
-                fail_silently=False,
+            email_message = EmailMultiAlternatives(
+                subject=subject,
+                body=text_content,
+                from_email=email,  # Reply-to email
+                to=['kyrgyzpink@gmail.com'],  # Recipient email
             )
+            email_message.attach_alternative(html_content, "text/html")  # Attach HTML version
+            email_message.send()
 
             return redirect('profile:success_page')  # Redirect after successful submission
 

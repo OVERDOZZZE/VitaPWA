@@ -187,13 +187,13 @@ def checkout(request):
         for product_id, quantity in cart.items():
             product = get_object_or_404(Product, pk=product_id)
             qty = float(quantity)
-            if product.stock < qty:
-                messages.error(request, f"На складе недостаточно товара: {product.name}.")
-                order.delete()  # Отменяем создание заказа
-                return redirect('shop:cart')
+            # if product.stock < qty:
+            #     messages.error(request, f"На складе недостаточно товара: {product.name}.")
+            #     order.delete()  # Отменяем создание заказа
+            #     return redirect('shop:cart')
             
             # Вычитаем заказанное количество товара со склада
-            product.stock = float(product.stock) - qty
+            # product.stock = float(product.stock) - qty
             product.save()
 
             OrderItem.objects.create(
@@ -318,4 +318,3 @@ def cancel_order(request):
         return JsonResponse({'success': True, 'message': 'Order cancelled successfully.'})
     else:
         return JsonResponse({'success': False, 'message': 'Only pending orders can be cancelled.'})
-

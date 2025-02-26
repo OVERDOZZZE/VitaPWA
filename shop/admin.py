@@ -14,7 +14,7 @@ admin.site.register(SubCategory)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('formatted_name', 'formatted_price', 'formatted_stock', 'duplicate_link')
+    list_display = ('formatted_name', 'formatted_price', 'duplicate_link')
 
     def formatted_name(self, obj):
         return obj.formatted_name
@@ -26,16 +26,11 @@ class ProductAdmin(admin.ModelAdmin):
 
     formatted_price.short_description = "Цена"
 
-    def formatted_stock(self, obj):
-        return obj.formatted_stock
-
-    formatted_stock.short_description = "В стоке"
-
     def duplicate_link(self, obj):
         url = reverse('admin:shop_product_duplicate', args=[obj.pk])
-        return format_html('<a href="{}" class="button">Duplicate</a>', url)
+        return format_html('<a href="{}" class="button">Дублировать</a>', url)
 
-    duplicate_link.short_description = "Duplicate"
+    duplicate_link.short_description = "Дубликация"
 
     def get_urls(self):
         urls = super().get_urls()

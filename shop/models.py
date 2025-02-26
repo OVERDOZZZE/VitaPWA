@@ -107,13 +107,13 @@ class Product(models.Model):
         verbose_name='Код продукта',
         help_text='Необязательно'
     )
-    stock = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name='В стоке',
-        help_text='Количество товара, которое имеется на складе или на руках',
-        default=0
-    )
+    # stock = models.DecimalField(
+    #     max_digits=10,
+    #     decimal_places=2,
+    #     verbose_name='В стоке',
+    #     help_text='Количество товара, которое имеется на складе или на руках',
+    #     default=0
+    # )
     image = CloudinaryField(
         'products/',
         blank=True,
@@ -144,13 +144,13 @@ class Product(models.Model):
             return f'{self.price} сом/кг'
         return self.price
 
-    @property
-    def formatted_stock(self):
-        if self.type == 'unit':
-            return f'{self.stock} шт'
-        elif self.type == 'weight':
-            return f'{self.stock} кг'
-        return self.stock
+    # @property
+    # def formatted_stock(self):
+    #     if self.type == 'unit':
+    #         return f'{self.stock} шт'
+    #     elif self.type == 'weight':
+    #         return f'{self.stock} кг'
+    #     return self.stock
 
     @property
     def image_url(self):
