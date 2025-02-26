@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('checkout-form');
     const orderBtn = document.getElementById('order-btn');
-
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         orderBtn.disabled = true;
@@ -17,15 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
             });
 
-            if (response.ok) {
-                window.location.href = '{% url 'shop:order_list' %}' // Adjust this URL as needed
-
-            } else {
-                const data = await response.json();
-                alert(data.error || 'Произошла ошибка при оформлении заказа');
-                orderBtn.disabled = false;
-                orderBtn.innerHTML = '<i class="fas fa-check"></i> Оформить заказ';
-            }
+        if (response.ok) {
+            alert('Заказ успешно оформлен');
+            window.location.replace('/order_list/'); // Add this line for redirect
+        } else {
+            const data = await response.json();
+            alert(data.error || 'Произошла ошибка при оформлении заказа');
+            orderBtn.disabled = false;
+            orderBtn.innerHTML = '<i class="fas fa-check"></i> Оформить заказ';
+            window.location.replace('/cart/'); // Add this line for redirect
+        }
         } catch (error) {
             console.error('Error submitting order:', error);
             alert('Произошла ошибка. Пожалуйста, попробуйте еще раз.');
