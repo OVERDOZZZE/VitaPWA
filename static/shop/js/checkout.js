@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                window.location.href = 'order_list/'; // Adjust this URL as needed
+                window.location.href = 'https://b2b-aikol.vercel.app/order_list/' // Adjust this URL as needed
             } else {
                 const data = await response.json();
                 alert(data.error || 'Произошла ошибка при оформлении заказа');
