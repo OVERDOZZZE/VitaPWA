@@ -124,7 +124,7 @@ def cart(request):
 
 
 def email_sending(order, subject, request, template, status):
-    if status == True:
+    if status:
         today = date.today()
 
         order_items = order.item.all()
@@ -140,7 +140,7 @@ def email_sending(order, subject, request, template, status):
             customer_address = user.address
             store_name = user.store_name
             phone_number = user.phone_number
-        except Profile.DoesNotExist:
+        except:
             customer_name = request.user
             customer_address = 'Не указан'
             store_name = 'Не указан'
@@ -164,7 +164,7 @@ def email_sending(order, subject, request, template, status):
             subject=subject,
             body=plain_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            to=['kyrgyzpink@gmail.com', 'aikol.abdykadyrov22.08.00@gmail.com'],
+            to=['kyrgyzpink@gmail.com', 'aikol.abdykadyrov22.08.00@gmail.com']
         )
         message.attach_alternative(html_message, 'text/html')
         message.send()
@@ -180,7 +180,7 @@ def checkout(request):
         if not cart:
             messages.error(request, "Корзина пуста.")
             return redirect('shop:product_list')
-        
+
         # Создаём заказ на основе данных корзины
         order = Order.objects.create(user=request.user, comment=comment)
 
@@ -191,7 +191,7 @@ def checkout(request):
             #     messages.error(request, f"На складе недостаточно товара: {product.name}.")
             #     order.delete()  # Отменяем создание заказа
             #     return redirect('shop:cart')
-            
+
             # Вычитаем заказанное количество товара со склада
             # product.stock = float(product.stock) - qty
             product.save()
@@ -220,6 +220,7 @@ def checkout(request):
 
 
 from django.db.models import Q
+
 
 @login_required
 def product_list(request):
@@ -304,7 +305,7 @@ def _save_cart(request, cart):
 def cancel_order(request):
     order_id = request.POST.get('order_id')
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    
+
     if order.status == 'pending':
         order.status = 'cancelled'
         order.save()
